@@ -1,8 +1,8 @@
 # csess
 
-Browse your Claude Code session history and copy a resume command to your clipboard.
+A cross-agent session picker for Claude, Codex, and Amp.
 
-Reads `~/.claude/history.jsonl`, shows all sessions in a table, and when you pick one it copies `cd "/path/to/project" && claude --resume <id>` to the clipboard.
+Shows all sessions in one table. Pick one, get the resume command copied to your clipboard.
 
 ## Setup
 
@@ -23,18 +23,26 @@ Navigate with arrow keys (or `j`/`k`), press `Enter` to select, `q` to quit.
 ## Sample output
 
 ```
-Date          Project                              Session
-2026-04-10    ~/code/my-api                        add rate limiting to the auth e…
-2026-04-09    ~/code/frontend                      why is the sidebar flickering o…
-2026-04-08    ~/work/data-pipeline                 rewrite the ETL job to use stre…
+Date          Agent   Project                         Session
+2026-04-13    claude  ~/code/my-api                   add rate limiting to the auth e…
+2026-04-13    amp     Amp Cloud                       fix the onboarding flow
+2026-04-12    codex   ~/work/data-pipeline            rewrite the ETL job to use stre…
+2026-04-12    claude  ~/code/frontend                 why is the sidebar flickering o…
 
-  3/42  |  ↑↓ navigate  |  Enter select  |  q quit
+  4/177  |  ↑↓ navigate  |  Enter select  |  q quit
 ```
 
-Selecting the second row copies this to clipboard:
+Selecting a row copies the right resume command for that agent:
 
 ```
-cd "/Users/alex/code/frontend" && claude --resume b2e7f1a3-9c4d-4e8b-a12f-3d6c8e0f4b91
+# claude
+cd "/Users/alex/code/my-api" && claude --resume f3a91c2d-7e04-4b6f-85dc-1a2b3c4d5e6f
+
+# codex
+codex resume -C "/Users/alex/work/data-pipeline" 02ab4512-fc31-48e7-b901-d2e3f4a5b6c7
+
+# amp
+amp threads continue T-02cd6734-a1b2-43e8-9f10-e2f3a4b5c6d7
 ```
 
 Paste it in your terminal to resume.
