@@ -16,9 +16,13 @@ Add that to your `~/.zshrc` and source it.
 
 ```
 csess
+csess --search "rate limiting"
+csess -s frontend
 ```
 
 Navigate with arrow keys (or `j`/`k`), press `Enter` to select, `q` to quit.
+
+`--search` (or `-s`) filters sessions before opening the table. Matches against agent, project, and session name.
 
 ## Sample output
 

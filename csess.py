@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import curses
 import json
 import os
@@ -185,8 +186,11 @@ def load_all():
     return sessions
 
 
-def main(stdscr):
+def main(stdscr, search=None):
     sessions = load_all()
+    if search:
+        q = search.lower()
+        sessions = [s for s in sessions if q in s[1] or q in s[2] or q in s[3] or q in s[4]]
     if not sessions:
         stdscr.addstr(0, 0, "No sessions found.")
         stdscr.refresh()
@@ -245,7 +249,8 @@ def main(stdscr):
             except curses.error:
                 pass
 
-        status = f"  {cursor + 1}/{len(sessions)}  |  ↑↓ navigate  |  Enter select  |  q quit"
+        filter_hint = f"  filter: {search}  |" if search else ""
+        status = f"{filter_hint}  {cursor + 1}/{len(sessions)}  |  ↑↓ navigate  |  Enter select  |  q quit"
         try:
             stdscr.addstr(h - 1, 0, status[:w - 1])
         except curses.error:
@@ -265,7 +270,10 @@ def main(stdscr):
 
 
 def run():
-    result = curses.wrapper(main)
+    parser = argparse.ArgumentParser(description="Cross-agent session picker")
+    parser.add_argument("--search", "-s", metavar="TERM", help="Filter sessions by search term")
+    args = parser.parse_args()
+    result = curses.wrapper(main, search=args.search)
     if not result:
         print("No session selected.")
         return
