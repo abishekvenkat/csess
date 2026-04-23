@@ -190,7 +190,7 @@ def main(stdscr, search=None):
     sessions = load_all()
     if search:
         q = search.lower()
-        sessions = [s for s in sessions if q in s[1] or q in s[2] or q in s[3] or q in s[4]]
+        sessions = [s for s in sessions if any(q in f.lower() for f in (s[1], s[2], s[3], s[4]))]
     if not sessions:
         stdscr.addstr(0, 0, "No sessions found.")
         stdscr.refresh()
