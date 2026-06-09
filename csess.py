@@ -186,8 +186,11 @@ def load_all():
     return sessions
 
 
-def main(stdscr, search=None):
+def main(stdscr, search=None, agent=None):
     sessions = load_all()
+    if agent:
+        a = agent.lower()
+        sessions = [s for s in sessions if s[2].lower() == a]
     if search:
         q = search.lower()
         sessions = [s for s in sessions if any(q in f.lower() for f in (s[1], s[2], s[3], s[4]))]
@@ -249,7 +252,12 @@ def main(stdscr, search=None):
             except curses.error:
                 pass
 
-        filter_hint = f"  filter: {search}  |" if search else ""
+        filters = []
+        if agent:
+            filters.append(f"agent: {agent}")
+        if search:
+            filters.append(f"filter: {search}")
+        filter_hint = f"  {'  |  '.join(filters)}  |" if filters else ""
         status = f"{filter_hint}  {cursor + 1}/{len(sessions)}  |  ↑↓ navigate  |  Enter select  |  q quit"
         try:
             stdscr.addstr(h - 1, 0, status[:w - 1])
@@ -272,8 +280,10 @@ def main(stdscr, search=None):
 def run():
     parser = argparse.ArgumentParser(description="Cross-agent session picker")
     parser.add_argument("--search", "-s", metavar="TERM", help="Filter sessions by search term")
+    parser.add_argument("--agent", "-a", metavar="AGENT", choices=["claude", "codex", "amp"],
+                        help="Filter sessions by agent (claude, codex, amp)")
     args = parser.parse_args()
-    result = curses.wrapper(main, search=args.search)
+    result = curses.wrapper(main, search=args.search, agent=args.agent)
     if not result:
         print("No session selected.")
         return
